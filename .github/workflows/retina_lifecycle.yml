@@ -5,7 +5,7 @@ on:
     branches: [ main ]
   workflow_dispatch:
   schedule:
-    - cron: '30 */6 * * *' # Chạy lệch 30 phút so với Não để tạo nhịp thở tự nhiên
+    - cron: '30 */6 * * *'
 
 permissions:
   contents: write
@@ -22,23 +22,32 @@ jobs:
         with:
           python-version: '3.10'
 
-      # CẢM ỨNG MÔI TRƯỜNG: Đón xung đạo hàm từ nút Não (neuron) gửi sang
-      - name: Ngửi xung đạo hàm từ nút Não tương ứng
-        run: |
-          OWNER="${{ github.repository_owner }}"
-          echo "📡 Đang dò tìm xung đạo hàm từ $OWNER/neuron..."
-          curl -s -f "https://raw.githubusercontent.com/$OWNER/neuron/main/synapse_backward.json" -o synapse_backward.json || echo "🍃 Chưa có xung đạo hàm mới từ Não."
+      # NẤC 1: XÚC TU VƯƠN VÒI TÌM ĐẠO HÀM THEO PHẢ HỆ
+      - name: Xúc tu vươn vòi tìm Não
+        env:
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_PARENT: ${{ github.event.repository.parent.owner.login }}
+        run: python receptors/cascade_receptor.py
 
-      # VẬN HÀNH MẮT THẦN (HẤP THỤ ĐẠO HÀM & QUÉT ẢNH MỚI)
+      # NẤC 2: MÀNG MIỄN DỊCH LỌC ĐẠO HÀM CHỐNG NỔ GRADIENT
+      - name: Màng miễn dịch kiểm định đạo hàm
+        run: python receptors/contract_receptor.py
+
+      # NHÂN TẾ BÀO MẮT: HẤP THỤ ĐẠO HÀM & QUÉT ẢNH
       - name: Vận hành Động cơ Mắt
-        run: |
-          python retina_engine.py
+        run: python retina_engine.py
 
-      # LƯU VẾT TÍCH XUNG THỊ GIÁC VÀ KÍNH LÚP VÀO GIT
+      # LƯU VẾT TÍCH XUNG THỊ GIÁC VÀO GIT
       - name: Phát xung thị giác lên môi trường mạng
         run: |
           git config --global user.name "Retina-Eye-Bot"
           git config --global user.email "bot@retina.node"
           git add synapses/ synapse_forward.json 2>/dev/null || true
-          git commit -m "👁️ [Xung Thị Giác] Mắt vừa quét xong ảnh mới [skip ci]" || echo "Không có biến đổi mới."
-          git push
+          
+          if ! git diff --staged --quiet; then
+            git commit -m "👁️ [Xung Thị Giác] Mắt vừa quét xong ảnh mới [skip ci]"
+            git pull --rebase origin main
+            git push origin main
+          else
+            echo "Không có biến đổi mới."
+          fi
