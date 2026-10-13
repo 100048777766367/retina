@@ -22,21 +22,26 @@ jobs:
         with:
           python-version: '3.10'
 
-      # NẤC 1: XÚC TU VƯƠN VÒI TÌM ĐẠO HÀM THEO PHẢ HỆ
-      - name: Xúc tu vươn vòi tìm Não
+     # NẤC 1: XÚC TU PHẢ HỆ (TÌM NÃO GIA ĐÌNH)
+      - name: Xúc tu vươn vòi tìm Não phả hệ
         env:
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_PARENT: ${{ github.event.repository.parent.owner.login }}
         run: python receptors/cascade_receptor.py
 
+      # NẤC 3: ANTEN SỢI NẤM TOÀN CẦU (NẾU NÃO GIA ĐÌNH VẮNG MẶT)
+      - name: Anten bắt sóng Bộ Não toàn cầu
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python receptors/mesh_receptor.py
+
       # NẤC 2: MÀNG MIỄN DỊCH LỌC ĐẠO HÀM CHỐNG NỔ GRADIENT
       - name: Màng miễn dịch kiểm định đạo hàm
         run: python receptors/contract_receptor.py
 
-      # NHÂN TẾ BÀO MẮT: HẤP THỤ ĐẠO HÀM & QUÉT ẢNH
-      - name: Vận hành Động cơ Mắt
-        run: python retina_engine.py
-
+      # VẬN HÀNH ĐỘNG CƠ GIÁC QUAN (TỰ VẶN LẠI KÍNH LÚP / LÔNG RUNG)
+      - name: Vận hành Động cơ Giác quan
+        run: python retina_engine.py  # (Hoặc cochlea_engine.py bên Tai)
       # LƯU VẾT TÍCH XUNG THỊ GIÁC VÀO GIT
       - name: Phát xung thị giác lên môi trường mạng
         run: |
