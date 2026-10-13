@@ -1,5 +1,9 @@
+# ==============================================================
+# TỰ ĐỘNG HÓA TIẾN HÓA & ĐỒNG BỘ HẠ TẦNG (CHỐNG LỆCH PHA)
+# ==============================================================
 version: 2
 updates:
+  # 1. Tự động đồng bộ các phiên bản GitHub Actions (chống đứt gãy Node 20, Node 24...)
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -7,6 +11,7 @@ updates:
     commit-message:
       prefix: "🤖 [Hạ Tầng CI/CD]"
 
+  # 2. Tự động đồng bộ các bản vá bảo mật Docker (khi đóng gói nơ-ron vào container)
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
