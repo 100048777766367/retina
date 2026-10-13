@@ -42,6 +42,7 @@ jobs:
       # VẬN HÀNH ĐỘNG CƠ GIÁC QUAN (TỰ VẶN LẠI KÍNH LÚP / LÔNG RUNG)
       - name: Vận hành Động cơ Giác quan
         run: python retina_engine.py  # (Hoặc cochlea_engine.py bên Tai)
+        
       # LƯU VẾT TÍCH XUNG THỊ GIÁC VÀO GIT
       - name: Phát xung thị giác lên môi trường mạng
         run: |
