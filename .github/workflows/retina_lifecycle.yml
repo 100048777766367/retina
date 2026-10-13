@@ -1,0 +1,44 @@
+name: Vòng Đời Mắt Diều Hâu (Retina HA)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+  schedule:
+    - cron: '30 */6 * * *' # Chạy lệch 30 phút so với Não để tạo nhịp thở tự nhiên
+
+permissions:
+  contents: write
+
+jobs:
+  run-retina:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kéo mã nguồn Mắt
+        uses: actions/checkout@v4
+
+      - name: Cài đặt Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      # CẢM ỨNG MÔI TRƯỜNG: Đón xung đạo hàm từ nút Não (neuron) gửi sang
+      - name: Ngửi xung đạo hàm từ nút Não tương ứng
+        run: |
+          OWNER="${{ github.repository_owner }}"
+          echo "📡 Đang dò tìm xung đạo hàm từ $OWNER/neuron..."
+          curl -s -f "https://raw.githubusercontent.com/$OWNER/neuron/main/synapse_backward.json" -o synapse_backward.json || echo "🍃 Chưa có xung đạo hàm mới từ Não."
+
+      # VẬN HÀNH MẮT THẦN (HẤP THỤ ĐẠO HÀM & QUÉT ẢNH MỚI)
+      - name: Vận hành Động cơ Mắt
+        run: |
+          python retina_engine.py
+
+      # LƯU VẾT TÍCH XUNG THỊ GIÁC VÀ KÍNH LÚP VÀO GIT
+      - name: Phát xung thị giác lên môi trường mạng
+        run: |
+          git config --global user.name "Retina-Eye-Bot"
+          git config --global user.email "bot@retina.node"
+          git add synapses/ synapse_forward.json 2>/dev/null || true
+          git commit -m "👁️ [Xung Thị Giác] Mắt vừa quét xong ảnh mới [skip ci]" || echo "Không có biến đổi mới."
+          git push
