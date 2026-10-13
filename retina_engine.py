@@ -34,7 +34,7 @@ class RetinaEngine:
         return packet_forward
 
     # 2. CHIỀU NGƯỢC (SPLIT LEARNING): ĐÓN ĐẠO HÀM TỪ NÃO ĐỂ TỰ VẶN LẠI KÍNH LÚP
-    def absorb_brain_feedback(self, backward_file="synapse_backward.json"):
+    def absorb_brain_feedback(self, backward_file="verified_backward.json"):
         if not os.path.exists(backward_file):
             print("🍃 [MÔI TRƯỜNG TĨNH] Chưa thấy xung đạo hàm từ Não gửi về.")
             return
