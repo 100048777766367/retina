@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Kéo mã nguồn Mắt
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Cài đặt Python
         uses: actions/setup-python@v5
